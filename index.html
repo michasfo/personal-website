@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Micha — Personal Site</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --text: #1a1a1a;
+      --muted: #666;
+      --border: #e0e0e0;
+      --bg: #fafafa;
+      --accent: #2a2a2a;
+      --card: #fff;
+      --hover-border: #bbb;
+      --hover-shadow: rgba(0,0,0,0.04);
+      --focus-border: #999;
+      --btn-hover: #444;
+    }
+
+    html[data-theme="dark"] {
+      --text: #e8e8e8;
+      --muted: #999;
+      --border: #2a2a2a;
+      --bg: #111;
+      --accent: #e8e8e8;
+      --card: #1a1a1a;
+      --hover-border: #444;
+      --hover-shadow: rgba(0,0,0,0.2);
+      --focus-border: #666;
+      --btn-hover: #ccc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 4rem 1.5rem;
+    }
+
+    main {
+      max-width: 520px;
+      width: 100%;
+    }
+
+    /* Avatar */
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Name & Bio */
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .bio {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 2.5rem;
+      max-width: 440px;
+    }
+
+    /* Sections */
+    section { margin-bottom: 2.5rem; }
+
+    h2 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    /* Projects */
+    .projects {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .projects li a {
+      display: block;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text);
+      background: var(--card);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .projects li a:hover {
+      border-color: var(--hover-border);
+      box-shadow: 0 2px 8px var(--hover-shadow);
+    }
+
+    .project-name {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .project-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+    }
+
+    /* Contact Form */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    input, textarea {
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--focus-border);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.65rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: background 0.15s;
+    }
+
+    button:hover {
+      background: var(--btn-hover);
+    }
+
+    html[data-theme="dark"] button {
+      color: #111;
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: border-color 0.15s, background 0.15s;
+      z-index: 10;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--hover-border);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" aria-label="Toggle dark mode" onclick="toggleTheme()">&#9790;</button>
+  <main>
+    <!-- Avatar: replace the span with an <img src="avatar.jpg" alt="Micha"> -->
+    <div class="avatar">
+      <span>M</span>
+    </div>
+
+    <h1>Micha</h1>
+    <p class="bio">
+      Developer and maker. I build things for the web and enjoy working on
+      tools that make people's lives a little easier.
+    </p>
+
+    <section>
+      <h2>Projects</h2>
+      <ul class="projects">
+        <li>
+          <a href="#">
+            <div class="project-name">Project One</div>
+            <div class="project-desc">A brief description of what this project does.</div>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <div class="project-name">Project Two</div>
+            <div class="project-desc">Another cool thing you've built or contributed to.</div>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <div class="project-name">Project Three</div>
+            <div class="project-desc">Yet another project worth sharing.</div>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Get in Touch</h2>
+      <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <textarea name="message" placeholder="Message" required></textarea>
+        <button type="submit">Send</button>
+      </form>
+    </section>
+
+    <footer>
+      &copy; 2026 Micha
+    </footer>
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const btn = document.querySelector('.theme-toggle');
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      btn.innerHTML = isDark ? '&#9790;' : '&#9728;';
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    }
+
+    // Load saved preference or respect system preference
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = saved || (prefersDark ? 'dark' : 'light');
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.querySelector('.theme-toggle').innerHTML = '&#9728;';
+      }
+    })();
+  </script>
+</body>
+</html>
