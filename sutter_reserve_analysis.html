@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1970 Sutter Street — Reserve Account Analysis 2026</title>
+<script>
+function showTab(n) {
+  var panels = document.querySelectorAll('.panel');
+  var buttons = document.querySelectorAll('.tb');
+  for (var i = 0; i < panels.length; i++) {
+    panels[i].style.display = (i === n) ? 'block' : 'none';
+  }
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].className = buttons[i].className.replace(' on', '');
+    if (i === n) buttons[i].className += ' on';
+  }
+}
+window.addEventListener('DOMContentLoaded', function() { showTab(0); });
+</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #F8FAFC; color: #111827; margin: 0; padding: 22px 18px; font-size: 13px; line-height: 1.5; }
+.wrap { max-width: 960px; margin: 0 auto; }
+.hdr { background: #0F172A; border-radius: 12px; padding: 22px 28px; margin-bottom: 16px; color: #fff; }
+.hdr h1 { font-size: 20px; font-weight: 600; margin: 0 0 4px; }
+.hdr p { font-size: 12px; color: #94A3B8; margin: 0 0 3px; }
+.tabs { display: flex; gap: 3px; background: #fff; border: 1px solid #E5E7EB; border-radius: 10px; padding: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+.tb { flex: 1 1 auto; padding: 8px 10px; border-radius: 7px; border: none; cursor: pointer; font-size: 12px; font-weight: 400; background: transparent; color: #374151; font-family: inherit; white-space: nowrap; }
+.tb:hover { background: #F3F4F6; }
+.tb.on { background: #0F172A; color: #fff; font-weight: 600; }
+.tb.red { background: #FEE2E2; color: #991B1B; font-weight: 500; }
+.tb.red.on { background: #991B1B; color: #fff; }
+.panel { display: none; }
+.card { background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; }
+.card h2 { font-size: 14px; font-weight: 600; color: #111827; margin: 0 0 3px; }
+.card .sub { font-size: 12px; color: #6B7280; margin: 0 0 14px; }
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.mx { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 12px 14px; }
+.ml { font-size: 10px; color: #6B7280; text-transform: uppercase; letter-spacing: .05em; margin: 0 0 4px; }
+.mv { font-size: 20px; font-weight: 700; color: #111827; margin: 0; line-height: 1.1; }
+.ms { font-size: 11px; color: #6B7280; margin: 3px 0 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 8px 10px; color: #6B7280; font-weight: 600; font-size: 11px; border-bottom: 2px solid #E5E7EB; background: #F9FAFB; }
+th.r, td.r { text-align: right; }
+th.c, td.c { text-align: center; }
+td { padding: 8px 10px; color: #111827; border-bottom: 1px solid #F3F4F6; vertical-align: middle; }
+tr.tot td { font-weight: 700; background: #F3F4F6; border-top: 2px solid #E5E7EB; border-bottom: none; }
+tr.hl td { background: #FFFBEB; }
+tr.hl2 td { background: #FEF2F2; }
+.badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+.br { background: #FEE2E2; color: #991B1B; }
+.ba { background: #FEF3C7; color: #92400E; }
+.bg { background: #DCFCE7; color: #166534; }
+.bb { background: #DBEAFE; color: #1D4ED8; }
+.bgr { background: #F3F4F6; color: #6B7280; }
+.alert { border-radius: 9px; padding: 13px 15px; margin-bottom: 14px; font-size: 13px; line-height: 1.65; }
+.ar { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; }
+.aa { background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; }
+.ai { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; }
+.ag { background: #F0FDF4; border: 1px solid #BBF7D0; color: #166534; }
+.note { font-size: 11px; color: #9CA3AF; margin: 8px 0 0; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.sc { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 14px; }
+.sc h3 { font-size: 13px; font-weight: 600; margin: 0 0 7px; }
+.sc p { font-size: 12px; color: #4B5563; margin: 0; line-height: 1.6; }
+
+/* funding bar */
+.fund-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; font-size: 12px; }
+.fund-label { width: 170px; flex-shrink: 0; color: #374151; }
+.fund-track { flex: 1; height: 16px; background: #F3F4F6; border-radius: 4px; overflow: hidden; }
+.fund-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 6px; font-size: 10px; color: #fff; font-weight: 600; }
+.fund-val { width: 60px; flex-shrink: 0; font-size: 11px; color: #6B7280; text-align: right; }
+
+/* urgency bar chart */
+.urgency-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+@media (max-width: 580px) { .two { grid-template-columns: 1fr; } body { padding: 12px 10px; } .fund-label { width: 120px; font-size: 11px; } }
+@media print { .tabs { display: none; } .panel { display: block !important; } .card { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <h1>Reserve account analysis — 1970 Sutter Street Condominium Association</h1>
+  <p>Source: ReserveTrackr, Inc. Level 3 Reserve Study &nbsp;·&nbsp; Report date: September 18, 2025 &nbsp;·&nbsp; Fiscal year: January 1 – December 31, 2026</p>
+  <p>Last on-site inspection: February 23, 2024 &nbsp;·&nbsp; 19 residential units &nbsp;·&nbsp; Built 2001 &nbsp;·&nbsp; 43 tracked components</p>
+</div>
+
+<div class="alert aa"><strong>Important context:</strong> Only one reserve study is available in the 2026 Annual Budget disclosure — the ReserveTrackr Level 3 update dated September 18, 2025. The Pro Forma financial statements reference a prior study by California Reserves LLC (February 2025), but that document was not included in the disclosure package. A true year-over-year comparison of component additions, removals, and estimate changes requires uploading that prior study. This analysis is a deep examination of the current study, flagging all internal signals about overdue work, deferrals, and risk.</div>
+
+<div class="tabs">
+  <button class="tb" onclick="showTab(0)">Summary</button>
+  <button class="tb red" onclick="showTab(1)">Overdue now (7)</button>
+  <button class="tb" onclick="showTab(2)">Due 1–5 yrs (13)</button>
+  <button class="tb" onclick="showTab(3)">Due 6–15 yrs (9)</button>
+  <button class="tb" onclick="showTab(4)">All 43 components</button>
+  <button class="tb" onclick="showTab(5)">Funding &amp; trajectory</button>
+</div>
+
+<!-- ═══ SUMMARY ═══ -->
+<div class="panel">
+  <div class="alert ar"><strong>Critical financial position:</strong> The association holds $15,908 in reserve cash against a fully-funded target of $757,051 — <strong>2% funded</strong>. Annual contributions of $29,000 fall $25,757 short of the $54,757 needed just to maintain pace with component wear. Two special assessments totalling $175,000 are required within 3 years.</div>
+  <div class="metrics">
+    <div class="mx"><p class="ml">Total components</p><p class="mv">43</p><p class="ms">4 categories</p></div>
+    <div class="mx"><p class="ml">Total replacement value</p><p class="mv">$1,145,008</p><p class="ms">all 43 at current cost</p></div>
+    <div class="mx"><p class="ml">Reserve cash on hand</p><p class="mv">$15,908</p><p class="ms">est. Dec 31, 2025</p></div>
+    <div class="mx"><p class="ml">% funded</p><p class="mv" style="color:#DC2626">2%</p><p class="ms">target: 70–100%</p></div>
+    <div class="mx"><p class="ml">Annual accrual needed</p><p class="mv">$54,757</p><p class="ms">to keep pace with wear</p></div>
+    <div class="mx"><p class="ml">Annual shortfall</p><p class="mv" style="color:#DC2626">$25,757</p><p class="ms">$29,000 contributed vs $54,757 needed</p></div>
+  </div>
+
+  <div class="card">
+    <h2>Components by urgency tier</h2>
+    <p class="sub">How the 43 components distribute across remaining-life buckets</p>
+    <div style="display:flex;gap:8px;align-items:flex-end;height:140px;padding-top:16px;margin-bottom:8px;">
+      <div class="urgency-col"><span style="font-size:11px;font-weight:700;color:#DC2626;">7</span><div style="width:100%;background:#DC2626;border-radius:4px 4px 0 0;height:56px;"></div><span style="font-size:11px;color:#374151;text-align:center;">Overdue</span></div>
+      <div class="urgency-col"><span style="font-size:11px;font-weight:700;color:#F59E0B;">13</span><div style="width:100%;background:#F59E0B;border-radius:4px 4px 0 0;height:104px;"></div><span style="font-size:11px;color:#374151;text-align:center;">1–5 yrs</span></div>
+      <div class="urgency-col"><span style="font-size:11px;font-weight:700;color:#3B82F6;">5</span><div style="width:100%;background:#3B82F6;border-radius:4px 4px 0 0;height:40px;"></div><span style="font-size:11px;color:#374151;text-align:center;">6–10 yrs</span></div>
+      <div class="urgency-col"><span style="font-size:11px;font-weight:700;color:#16A34A;">8</span><div style="width:100%;background:#16A34A;border-radius:4px 4px 0 0;height:64px;"></div><span style="font-size:11px;color:#374151;text-align:center;">11–20 yrs</span></div>
+      <div class="urgency-col"><span style="font-size:11px;font-weight:700;color:#86EFAC;">10</span><div style="width:100%;background:#86EFAC;border-radius:4px 4px 0 0;height:80px;"></div><span style="font-size:11px;color:#374151;text-align:center;">20+ yrs</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Replacement cost by category</h2>
+    <p class="sub">Where the $1,145,008 total replacement value is concentrated</p>
+    <div style="margin:10px 0;">
+      <div class="fund-row"><div class="fund-label">Building Exteriors</div><div class="fund-track"><div class="fund-fill" style="width:41%;background:#3B82F6;">$470,119 — 41.1%</div></div></div>
+      <div class="fund-row"><div class="fund-label">Fire Safety &amp; Mech.</div><div class="fund-track"><div class="fund-fill" style="width:36.6%;background:#DC2626;">$418,755 — 36.6%</div></div></div>
+      <div class="fund-row"><div class="fund-label">Building Interiors</div><div class="fund-track"><div class="fund-fill" style="width:19.1%;background:#D97706;">$218,403 — 19.1%</div></div></div>
+      <div class="fund-row"><div class="fund-label">Common Areas</div><div class="fund-track"><div class="fund-fill" style="width:3.3%;background:#16A34A;">$37,731</div></div><div class="fund-val">3.3%</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>5-year expenditure schedule</h2>
+    <p class="sub">Known upcoming reserve spend — 2026 through 2030</p>
+    <div style="display:flex;gap:8px;align-items:flex-end;height:140px;padding-top:16px;margin-bottom:8px;">
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#DC2626;">$81K</span><div style="width:100%;background:#DC2626;border-radius:4px 4px 0 0;height:46px;"></div><span style="font-size:11px;color:#374151;">2026</span></div>
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#3B82F6;">$11K</span><div style="width:100%;background:#3B82F6;border-radius:4px 4px 0 0;height:6px;"></div><span style="font-size:11px;color:#374151;">2027</span></div>
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#3B82F6;">$14K</span><div style="width:100%;background:#3B82F6;border-radius:4px 4px 0 0;height:8px;"></div><span style="font-size:11px;color:#374151;">2028</span></div>
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#7F1D1D;">$234K</span><div style="width:100%;background:#7F1D1D;border-radius:4px 4px 0 0;height:134px;"></div><span style="font-size:11px;color:#374151;">2029 ⚠️</span></div>
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#3B82F6;">$26K</span><div style="width:100%;background:#3B82F6;border-radius:4px 4px 0 0;height:15px;"></div><span style="font-size:11px;color:#374151;">2030</span></div>
+    </div>
+    <p class="note">2029 spike = elevator modernization ($202K) + contingency ($32K). The reserve fund will have ~$97,539 at that point — the $125K special assessment bridges the gap.</p>
+  </div>
+
+  <div class="card">
+    <h2>Key findings at a glance</h2>
+    <table>
+      <thead><tr><th>Finding</th><th>Detail</th><th>Risk</th></tr></thead>
+      <tbody>
+        <tr class="hl2"><td>7 components overdue (RL=0)</td><td style="font-size:11px">Stucco repaint, fire escapes, gate operators, security system, mailboxes, metal surfaces, stucco repair — all due 2026, total $81,030</td><td><span class="badge br">High</span></td></tr>
+        <tr class="hl2"><td>Security system deferred twice</td><td style="font-size:11px">Def=2 — deferred in two prior reserve cycles. Written justification required by CA law but not shown in current study notes.</td><td><span class="badge br">High</span></td></tr>
+        <tr class="hl"><td>Elevator modernization in 3 years</td><td style="font-size:11px">$214,600 current / ~$234,499 at 2029. TKE flagged discontinued control board. Fund will have ~$97,539 — requires $125K special assessment.</td><td><span class="badge br">Critical</span></td></tr>
+        <tr class="hl"><td>Two special assessments scheduled</td><td style="font-size:11px">$50,000 in 2026 ($2,632/unit) and $125,000 in 2029 ($6,579/unit)</td><td><span class="badge ba">Moderate</span></td></tr>
+        <tr><td>Flat roof in 8 years</td><td style="font-size:11px">$186,133 current — largest single-line item, 16.99% of annual accrual. ~$235K at 2034.</td><td><span class="badge ba">Moderate</span></td></tr>
+        <tr><td>Annual funding shortfall</td><td style="font-size:11px">Contributing $29,000 vs $54,757 needed — $25,757 deficit compounds annually</td><td><span class="badge br">High</span></td></tr>
+        <tr><td>Level 3 study — no inspection</td><td style="font-size:11px">All data carried from prior study (last inspection Feb 23, 2024). Next Level 1 due by Feb 2027.</td><td><span class="badge ba">Moderate</span></td></tr>
+        <tr><td>Not FHA/VA certified</td><td style="font-size:11px">As of Oct 2025 — may limit refinancing and buyer pool for unit owners</td><td><span class="badge ba">Moderate</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ OVERDUE ═══ -->
+<div class="panel">
+  <div class="alert ar"><strong>7 items are at or past useful life (RL=0) and are scheduled for 2026.</strong> Total cost: $81,030. The reserve fund holds only $15,908, requiring the $50,000 special assessment plus 2026 contributions to fund these. The Security System is the only item with a formal deferral record.</div>
+  <div class="card">
+    <h2>Overdue components — all scheduled for 2026 action</h2>
+    <p class="sub">Remaining Life = 0 means the component has reached or exceeded its expected useful life</p>
+    <table>
+      <thead><tr><th>#</th><th>Component</th><th>Category</th><th class="c">Useful life</th><th class="c">Status</th><th class="r">Cost</th><th class="r">% of 2026 total</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr class="hl2"><td>14</td><td><strong>Stucco, Repaint</strong></td><td>Bldg Exteriors</td><td class="c">10 yr</td><td class="c"><span class="badge br">Overdue</span></td><td class="r">$31,328</td><td class="r">38.7%</td><td style="font-size:11px">Largest 2026 item. 7,700 SF at $4.07/SF.</td></tr>
+        <tr class="hl2"><td>16</td><td><strong>Fire Escapes, Repaint</strong></td><td>Bldg Interiors</td><td class="c">7 yr</td><td class="c"><span class="badge br">Overdue</span></td><td class="r">$20,514</td><td class="r">25.3%</td><td style="font-size:11px">Safety-critical. Shortest cycle in study (7 yr).</td></tr>
+        <tr style="background:#FFFBEB"><td>43</td><td><strong>Security System, Replace</strong></td><td>Fire/Mech</td><td class="c">10 yr</td><td class="c"><span class="badge ba">Deferred ×2</span></td><td class="r">$13,337</td><td class="r">16.5%</td><td style="font-size:11px"><strong>Only formally deferred item.</strong> Deferred twice in prior cycles (Def=2). Written justification required per CA standards.</td></tr>
+        <tr class="hl2"><td>39</td><td>Gate Operators, Replace (×2)</td><td>Fire/Mech</td><td class="c">15 yr</td><td class="c"><span class="badge br">Overdue</span></td><td class="r">$12,020</td><td class="r">14.8%</td><td style="font-size:11px">Both operators at end of useful life simultaneously.</td></tr>
+        <tr class="hl2"><td>21</td><td>Mailboxes, Replace (×20)</td><td>Bldg Interiors</td><td class="c">25 yr</td><td class="c"><span class="badge br">Overdue</span></td><td class="r">$7,023</td><td class="r">8.7%</td><td style="font-size:11px">Full 25-yr useful life reached (building built 2001).</td></tr>
+        <tr class="hl2"><td>12</td><td>Metal Surfaces, Repaint</td><td>Bldg Exteriors</td><td class="c">10 yr</td><td class="c"><span class="badge br">Overdue</span></td><td class="r">$5,073</td><td class="r">6.3%</td><td style="font-size:11px">250 LF. Coordinate with stucco work to reduce mobilization costs.</td></tr>
+        <tr class="hl2"><td>13</td><td>Stucco, Minor Repair</td><td>Bldg Exteriors</td><td class="c">10 yr</td><td class="c"><span class="badge br">Overdue</span></td><td class="r">$5,073</td><td class="r">6.3%</td><td style="font-size:11px">7,700 SF. Should precede or accompany the repaint.</td></tr>
+        <tr class="tot"><td colspan="4">2026 total scheduled</td><td></td><td class="r">$94,368</td><td class="r">100%</td><td style="font-size:11px">Cash $15,908 + contributions $29,000 + special $50,000 = $94,908 available</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="alert aa"><strong>Security System deferral (Def=2):</strong> California reserve study standards require a written statement for each deferred component explaining why replacement was deferred. The current study lists the security system with Def=2 but the Notes field reads "none." The board should document the justification — typically a contractor assessment showing the system remains functional — or schedule replacement in 2026.</div>
+  <div class="card">
+    <h2>2026 funding arithmetic</h2>
+    <table>
+      <tbody>
+        <tr><td>2026 scheduled reserve expenditures</td><td class="r">$81,030</td></tr>
+        <tr><td>Reserve cash available Jan 1, 2026 (est.)</td><td class="r">$15,908</td></tr>
+        <tr><td>2026 reserve contributions</td><td class="r">$29,000</td></tr>
+        <tr><td>2026 special assessment (approved)</td><td class="r">$50,000</td></tr>
+        <tr class="tot"><td>Total funds available in 2026</td><td class="r">$94,908</td></tr>
+        <tr><td style="color:#059669">Projected Dec 31, 2026 balance</td><td class="r" style="color:#059669">$13,878</td></tr>
+        <tr><td style="color:#DC2626">Fully funded target at year-end 2026</td><td class="r" style="color:#DC2626">$752,731</td></tr>
+        <tr class="tot"><td style="color:#DC2626">Reserve fund deficit entering 2027</td><td class="r" style="color:#DC2626">($738,853)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ DUE 1-5 YRS ═══ -->
+<div class="panel">
+  <div class="alert ar"><strong>13 components due within 5 years</strong>, totalling $331,647 at current cost (~$366,990 inflation-adjusted). The elevator modernization ($185,000 + $29,600 contingency) dominates this period — due with only ~$97,539 in the fund, requiring the $125K special assessment.</div>
+  <div class="card">
+    <h2>Components due 1–5 years (2027–2031)</h2>
+    <table>
+      <thead><tr><th>#</th><th>Component</th><th>Category</th><th class="c">RL</th><th class="c">UL</th><th class="r">Current cost</th><th class="r">Inflated at replacement</th><th>Risk</th></tr></thead>
+      <tbody>
+        <tr class="hl2"><td>32</td><td><strong>Elevator, Modernize</strong></td><td>Fire/Mech</td><td class="c"><strong>3 yr</strong></td><td class="c">30 yr</td><td class="r"><strong>$185,000</strong></td><td class="r">$202,154</td><td><span class="badge br">Critical</span></td></tr>
+        <tr class="hl2"><td>33</td><td>Elevator Contingency (16%)</td><td>Fire/Mech</td><td class="c">3 yr</td><td class="c">—</td><td class="r">$29,600</td><td class="r">$32,345</td><td><span class="badge br">Critical</span></td></tr>
+        <tr><td>23</td><td>Irrigation Controller</td><td>Common Areas</td><td class="c">1 yr</td><td class="c">15 yr</td><td class="r">$3,500</td><td class="r">$3,605</td><td><span class="badge bg">Low</span></td></tr>
+        <tr><td>24</td><td>Landscaping, Replenish</td><td>Common Areas</td><td class="c">1 yr</td><td class="c">10 yr</td><td class="r">$7,373</td><td class="r">$7,594</td><td><span class="badge bg">Low</span></td></tr>
+        <tr class="hl"><td>3</td><td>Deck Surfaces, Seal/Repair</td><td>Bldg Exteriors</td><td class="c">4 yr</td><td class="c">6 yr</td><td class="r">$23,455</td><td class="r">$26,399</td><td><span class="badge ba">Moderate</span></td></tr>
+        <tr><td>4</td><td>Exterior Wall Lights (×17)</td><td>Bldg Exteriors</td><td class="c">5 yr</td><td class="c">30 yr</td><td class="r">$5,073</td><td class="r">$5,881</td><td><span class="badge bg">Low</span></td></tr>
+        <tr><td>7</td><td>Garage Entry Gate</td><td>Bldg Exteriors</td><td class="c">5 yr</td><td class="c">30 yr</td><td class="r">$6,082</td><td class="r">$7,051</td><td><span class="badge bg">Low</span></td></tr>
+        <tr class="hl"><td>25</td><td>Latticework Fence, Replace</td><td>Common Areas</td><td class="c">5 yr</td><td class="c">30 yr</td><td class="r">$16,254</td><td class="r">$18,843</td><td><span class="badge ba">Moderate</span></td></tr>
+        <tr class="hl"><td>26</td><td>Wood Retaining Wall</td><td>Common Areas</td><td class="c">5 yr</td><td class="c">30 yr</td><td class="r">$10,604</td><td class="r">$12,293</td><td><span class="badge ba">Moderate</span></td></tr>
+        <tr class="hl"><td>28</td><td>Boilers, Replace (×2)</td><td>Fire/Mech</td><td class="c">5 yr</td><td class="c">25 yr</td><td class="r">$23,988</td><td class="r">$27,808</td><td><span class="badge ba">Moderate</span></td></tr>
+        <tr class="hl"><td>29</td><td>CO2 Sensors (×3)</td><td>Fire/Mech</td><td class="c">5 yr</td><td class="c">20 yr</td><td class="r">$12,158</td><td class="r">$14,094</td><td><span class="badge ba">Moderate</span></td></tr>
+        <tr><td>36</td><td>Fire System Flow Switch (×3)</td><td>Fire/Mech</td><td class="c">5 yr</td><td class="c">30 yr</td><td class="r">$4,815</td><td class="r">$5,582</td><td><span class="badge bg">Low</span></td></tr>
+        <tr><td>38</td><td>Garage Ventilation Fan</td><td>Fire/Mech</td><td class="c">5 yr</td><td class="c">30 yr</td><td class="r">$3,745</td><td class="r">$4,341</td><td><span class="badge bg">Low</span></td></tr>
+        <tr class="tot"><td colspan="4">1–5 year total</td><td></td><td class="r">$331,647</td><td class="r">~$366,990</td><td></td></tr>
+      </tbody>
+    </table>
+    <p class="note">Inflated cost = current cost × (1.03)^years to replacement. Elevator figures per TKE engineering assessment cited in study.</p>
+  </div>
+  <div class="card">
+    <h2>Year-by-year reserve balance 2026–2030</h2>
+    <table>
+      <thead><tr><th>Year</th><th class="r">Opening balance</th><th class="r">Contributions</th><th class="r">Special assessment</th><th class="r">Expenditures</th><th class="r">Closing balance</th><th class="r">% funded</th></tr></thead>
+      <tbody>
+        <tr class="hl2"><td>2026</td><td class="r">$15,908</td><td class="r">$29,000</td><td class="r">$50,000</td><td class="r">$81,030</td><td class="r">$13,878</td><td class="r"><span class="badge br">2%</span></td></tr>
+        <tr><td>2027</td><td class="r">$13,878</td><td class="r">$43,500</td><td class="r">—</td><td class="r">$11,199</td><td class="r">$46,199</td><td class="r"><span class="badge br">6%</span></td></tr>
+        <tr><td>2028</td><td class="r">$46,199</td><td class="r">$65,250</td><td class="r">—</td><td class="r">$14,150</td><td class="r">$97,539</td><td class="r"><span class="badge br">11%</span></td></tr>
+        <tr class="hl2 tot"><td>2029 — elevator year</td><td class="r">$97,539</td><td class="r">$91,350</td><td class="r">$125,000</td><td class="r">$234,499</td><td class="r">$79,390</td><td class="r"><span class="badge br">11%</span></td></tr>
+        <tr><td>2030</td><td class="r">$79,390</td><td class="r">$94,091</td><td class="r">—</td><td class="r">$26,399</td><td class="r">$147,479</td><td class="r"><span class="badge ba">18%</span></td></tr>
+      </tbody>
+    </table>
+    <p class="note">Even after the $125K special assessment in 2029, the fund drops back to $79,390 — still critically underfunded at 11%.</p>
+  </div>
+</div>
+
+<!-- ═══ DUE 6-15 YRS ═══ -->
+<div class="panel">
+  <div class="alert ai">The 6–15 year horizon contains two of the three largest components — the <strong>Flat Roof ($186,133)</strong> and <strong>Deck Surfaces Resurface ($146,809)</strong> — representing 29% of all reserve liabilities and 28.2% of total annual accrual.</div>
+  <div class="card">
+    <h2>Due 6–10 years (2032–2036)</h2>
+    <table>
+      <thead><tr><th>#</th><th>Component</th><th>Category</th><th class="c">RL</th><th class="c">UL</th><th class="r">Current cost</th><th class="r">Accrual %</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr class="hl2"><td>5</td><td><strong>Flat Roof, Replace</strong></td><td>Bldg Exteriors</td><td class="c">8 yr</td><td class="c">20 yr</td><td class="r"><strong>$186,133</strong></td><td class="r"><span class="badge br">16.99%</span></td><td style="font-size:11px">9,200 SF. Highest accrual of any component. ~$235K at 2034.</td></tr>
+        <tr><td>18</td><td>Hallway/Stairs Carpet</td><td>Bldg Interiors</td><td class="c">6 yr</td><td class="c">14 yr</td><td class="r">$30,869</td><td class="r">4.02%</td><td style="font-size:11px">290 SY. Due ~2032.</td></tr>
+        <tr><td>19</td><td>Interior Surfaces, Repaint</td><td>Bldg Interiors</td><td class="c">6 yr</td><td class="c">14 yr</td><td class="r">$27,002</td><td class="r">3.52%</td><td style="font-size:11px">7,980 SF. Often done together with carpet.</td></tr>
+        <tr><td>40</td><td>Hot Water Circulation Pump</td><td>Fire/Mech</td><td class="c">8 yr</td><td class="c">10 yr</td><td class="r">$1,605</td><td class="r">0.29%</td><td style="font-size:11px">Short cycle — only 2 years remaining after next replacement.</td></tr>
+        <tr class="tot"><td colspan="4">6–10 yr subtotal</td><td></td><td class="r">$245,609</td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>Due 11–15 years (2037–2041)</h2>
+    <table>
+      <thead><tr><th>#</th><th>Component</th><th>Category</th><th class="c">RL</th><th class="c">UL</th><th class="r">Current cost</th><th class="r">Accrual %</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr class="hl2"><td>2</td><td><strong>Deck Surfaces, Resurface</strong></td><td>Bldg Exteriors</td><td class="c">12 yr</td><td class="c">24 yr</td><td class="r"><strong>$146,809</strong></td><td class="r"><span class="badge br">11.17%</span></td><td style="font-size:11px">2,900 SF. ~$185K at 2038.</td></tr>
+        <tr><td>20</td><td>Lobby, Remodel</td><td>Bldg Interiors</td><td class="c">10 yr</td><td class="c">20 yr</td><td class="r">$49,220</td><td class="r">4.49%</td><td style="font-size:11px">600 SF at $82/SF. Due ~2036.</td></tr>
+        <tr><td>1</td><td>Composition Shingle Roof</td><td>Bldg Exteriors</td><td class="c">13 yr</td><td class="c">25 yr</td><td class="r">$7,281</td><td class="r">0.53%</td><td style="font-size:11px">450 SF partial roof area.</td></tr>
+        <tr><td>8</td><td>Intercom/Entry System</td><td>Bldg Exteriors</td><td class="c">13 yr</td><td class="c">15 yr</td><td class="r">$13,616</td><td class="r">1.66%</td><td style="font-size:11px">Relatively short 15-yr cycle for this system type.</td></tr>
+        <tr class="tot"><td colspan="4">11–15 yr subtotal</td><td></td><td class="r">$216,926</td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ ALL COMPONENTS ═══ -->
+<div class="panel">
+  <div class="card">
+    <h2>Complete component inventory — all 43 items</h2>
+    <p class="sub">Sorted by remaining life. Highlighted rows = overdue (red) or due within 5 years (amber).</p>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>#</th><th>Component</th><th>Category</th><th class="c">RL</th><th class="c">UL</th><th class="r">Current cost</th><th class="r">Accrual%</th><th class="c">Status</th></tr></thead>
+      <tbody>
+        <tr class="hl2"><td>12</td><td>Metal Surfaces, Repaint</td><td>Bldg Exteriors</td><td class="c"><strong style="color:#DC2626">0</strong></td><td class="c">10</td><td class="r">$5,073</td><td class="r">0.93%</td><td class="c"><span class="badge br">Overdue</span></td></tr>
+        <tr class="hl2"><td>13</td><td>Stucco, Minor Repair</td><td>Bldg Exteriors</td><td class="c"><strong style="color:#DC2626">0</strong></td><td class="c">10</td><td class="r">$5,073</td><td class="r">0.93%</td><td class="c"><span class="badge br">Overdue</span></td></tr>
+        <tr class="hl2"><td>14</td><td>Stucco, Repaint</td><td>Bldg Exteriors</td><td class="c"><strong style="color:#DC2626">0</strong></td><td class="c">10</td><td class="r">$31,328</td><td class="r">5.72%</td><td class="c"><span class="badge br">Overdue</span></td></tr>
+        <tr class="hl2"><td>16</td><td>Fire Escapes, Repaint</td><td>Bldg Interiors</td><td class="c"><strong style="color:#DC2626">0</strong></td><td class="c">7</td><td class="r">$20,514</td><td class="r">5.35%</td><td class="c"><span class="badge br">Overdue</span></td></tr>
+        <tr class="hl2"><td>21</td><td>Mailboxes, Replace</td><td>Bldg Interiors</td><td class="c"><strong style="color:#DC2626">0</strong></td><td class="c">25</td><td class="r">$7,023</td><td class="r">0.51%</td><td class="c"><span class="badge br">Overdue</span></td></tr>
+        <tr class="hl2"><td>39</td><td>Gate Operators, Replace</td><td>Fire/Mech</td><td class="c"><strong style="color:#DC2626">0</strong></td><td class="c">15</td><td class="r">$12,020</td><td class="r">1.46%</td><td class="c"><span class="badge br">Overdue</span></td></tr>
+        <tr class="hl"><td>43</td><td>Security System, Replace</td><td>Fire/Mech</td><td class="c"><strong style="color:#DC2626">0</strong></td><td class="c">10</td><td class="r">$13,337</td><td class="r">2.43%</td><td class="c"><span class="badge ba">Deferred ×2</span></td></tr>
+        <tr class="hl"><td>23</td><td>Irrigation Controller</td><td>Common Areas</td><td class="c">1</td><td class="c">15</td><td class="r">$3,500</td><td class="r">0.43%</td><td class="c"><span class="badge ba">Due 1–5yr</span></td></tr>
+        <tr class="hl"><td>24</td><td>Landscaping, Replenish</td><td>Common Areas</td><td class="c">1</td><td class="c">10</td><td class="r">$7,373</td><td class="r">1.35%</td><td class="c"><span class="badge ba">Due 1–5yr</span></td></tr>
+        <tr class="hl2"><td>32</td><td>Elevator, Modernize</td><td>Fire/Mech</td><td class="c">3</td><td class="c">30</td><td class="r">$185,000</td><td class="r">11.26%</td><td class="c"><span class="badge br">Critical 3yr</span></td></tr>
+        <tr class="hl2"><td>33</td><td>Elevator Contingency (16%)</td><td>Fire/Mech</td><td class="c">3</td><td class="c">—</td><td class="r">$29,600</td><td class="r">0.05%</td><td class="c"><span class="badge br">Critical 3yr</span></td></tr>
+        <tr class="hl"><td>3</td><td>Deck Surfaces, Seal/Repair</td><td>Bldg Exteriors</td><td class="c">4</td><td class="c">6</td><td class="r">$23,455</td><td class="r">7.14%</td><td class="c"><span class="badge ba">Due 1–5yr</span></td></tr>
+        <tr class="hl"><td>4</td><td>Exterior Wall Lights</td><td>Bldg Exteriors</td><td class="c">5</td><td class="c">30</td><td class="r">$5,073</td><td class="r">0.31%</td><td class="c"><span class="badge ba">Due 1–5yr</span></td></tr>
+        <tr class="hl"><td>7</td><td>Garage Entry Gate</td><td>Bldg Exteriors</td><td class="c">5</td><td class="c">30</td><td class="r">$6,082</td><td class="r">0.37%</td><td class="c"><span class="badge ba">Due 1–5yr</span></td></tr>
+        <tr class="hl"><td>25</td><td>Latticework Fence</td><td>Common Areas</td><td class="c">5</td><td class="c">30</td><td class="r">$16,254</td><td class="r">0.99%</td><td class="c"><span class="badge ba">Due 1–5yr</span></td></tr>
+        <tr class="hl"><td>26</td><td>Wood Retaining Wall</td><td>Common Areas</td><td class="c">5</td><td class="c">30</td><td class="r">$10,604</td><td class="r">0.65%</td><td class="c"><span class="badge ba">Due 1–5yr</span></td></tr>
+        <tr class="hl"><td>28</td><td>Boilers, Replace</td><td>Fire/Mech</td><td class="c">5</td><td class="c">25</td><td class="r">$23,988</td><td class="r">1.75%</td><td class="c"><span class="badge ba">Due 1–5yr</span></td></tr>
+        <tr class="hl"><td>29</td><td>CO2 Sensors</td><td>Fire/Mech</td><td class="c">5</td><td class="c">20</td><td class="r">$12,158</td><td class="r">1.11%</td><td class="c"><span class="badge ba">Due 1–5yr</span></td></tr>
+        <tr class="hl"><td>36</td><td>Fire System Flow Switch</td><td>Fire/Mech</td><td class="c">5</td><td class="c">30</td><td class="r">$4,815</td><td class="r">0.29%</td><td class="c"><span class="badge ba">Due 1–5yr</span></td></tr>
+        <tr class="hl"><td>38</td><td>Garage Ventilation Fan</td><td>Fire/Mech</td><td class="c">5</td><td class="c">30</td><td class="r">$3,745</td><td class="r">0.23%</td><td class="c"><span class="badge ba">Due 1–5yr</span></td></tr>
+        <tr><td>18</td><td>Hallway/Stairs Carpet</td><td>Bldg Interiors</td><td class="c">6</td><td class="c">14</td><td class="r">$30,869</td><td class="r">4.02%</td><td class="c"><span class="badge bb">Due 6–10yr</span></td></tr>
+        <tr><td>19</td><td>Interior Surfaces, Repaint</td><td>Bldg Interiors</td><td class="c">6</td><td class="c">14</td><td class="r">$27,002</td><td class="r">3.52%</td><td class="c"><span class="badge bb">Due 6–10yr</span></td></tr>
+        <tr><td>5</td><td>Flat Roof, Replace</td><td>Bldg Exteriors</td><td class="c">8</td><td class="c">20</td><td class="r">$186,133</td><td class="r">16.99%</td><td class="c"><span class="badge bb">Due 6–10yr</span></td></tr>
+        <tr><td>40</td><td>Hot Water Circulation Pump</td><td>Fire/Mech</td><td class="c">8</td><td class="c">10</td><td class="r">$1,605</td><td class="r">0.29%</td><td class="c"><span class="badge bb">Due 6–10yr</span></td></tr>
+        <tr><td>20</td><td>Lobby, Remodel</td><td>Bldg Interiors</td><td class="c">10</td><td class="c">20</td><td class="r">$49,220</td><td class="r">4.49%</td><td class="c"><span class="badge bb">Due 6–10yr</span></td></tr>
+        <tr><td>2</td><td>Deck Surfaces, Resurface</td><td>Bldg Exteriors</td><td class="c">12</td><td class="c">24</td><td class="r">$146,809</td><td class="r">11.17%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>1</td><td>Composition Shingle Roof</td><td>Bldg Exteriors</td><td class="c">13</td><td class="c">25</td><td class="r">$7,281</td><td class="r">0.53%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>8</td><td>Intercom/Entry System</td><td>Bldg Exteriors</td><td class="c">13</td><td class="c">15</td><td class="r">$13,616</td><td class="r">1.66%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>6</td><td>Front Door, Replace</td><td>Bldg Exteriors</td><td class="c">15</td><td class="c">40</td><td class="r">$5,538</td><td class="r">0.25%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>9</td><td>Metal Gates, Replace</td><td>Bldg Exteriors</td><td class="c">15</td><td class="c">40</td><td class="r">$4,149</td><td class="r">0.19%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>10</td><td>Metal Handrail, Replace</td><td>Bldg Exteriors</td><td class="c">15</td><td class="c">40</td><td class="r">$4,883</td><td class="r">0.22%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>11</td><td>Metal Railing, Replace</td><td>Bldg Exteriors</td><td class="c">15</td><td class="c">40</td><td class="r">$25,626</td><td class="r">1.17%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>22</td><td>Utility Doors, Replace</td><td>Bldg Interiors</td><td class="c">15</td><td class="c">40</td><td class="r">$67,410</td><td class="r">3.08%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>30</td><td>Domestic Water Pumps</td><td>Fire/Mech</td><td class="c">15</td><td class="c">40</td><td class="r">$10,700</td><td class="r">0.49%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>35</td><td>Fire System Backflow</td><td>Fire/Mech</td><td class="c">15</td><td class="c">40</td><td class="r">$8,560</td><td class="r">0.39%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>37</td><td>FlowTherm Pump Control</td><td>Fire/Mech</td><td class="c">15</td><td class="c">40</td><td class="r">$7,490</td><td class="r">0.34%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>41</td><td>Plumbing Fund</td><td>Fire/Mech</td><td class="c">15</td><td class="c">40</td><td class="r">$53,500</td><td class="r">2.44%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>42</td><td>Roof Vent Fans</td><td>Fire/Mech</td><td class="c">15</td><td class="c">40</td><td class="r">$5,778</td><td class="r">0.26%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>15</td><td>Exit/Emergency Lights</td><td>Bldg Interiors</td><td class="c">17</td><td class="c">20</td><td class="r">$6,731</td><td class="r">0.61%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>17</td><td>Hallway Lights, Replace</td><td>Bldg Interiors</td><td class="c">17</td><td class="c">25</td><td class="r">$9,634</td><td class="r">0.70%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>31</td><td>Elevator Cab, Remodel</td><td>Fire/Mech</td><td class="c">17</td><td class="c">25</td><td class="r">$16,713</td><td class="r">1.22%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>27</td><td>Boiler 80g Storage Tank</td><td>Fire/Mech</td><td class="c">18</td><td class="c">20</td><td class="r">$7,276</td><td class="r">0.66%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr><td>34</td><td>Fire Alarm Control Panel</td><td>Fire/Mech</td><td class="c">18</td><td class="c">20</td><td class="r">$22,470</td><td class="r">2.05%</td><td class="c"><span class="badge bgr">Due 10+yr</span></td></tr>
+        <tr class="tot"><td colspan="4">All 43 components</td><td></td><td class="r">$1,145,008</td><td class="r">100%</td><td></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="note">RL = Remaining Life (yrs). UL = Useful Life (yrs). "—" = perpetual fund, no fixed replacement cycle. Security System is the only item with a formal deferral flag (Def=2) — all other RL=0 items simply reached end of useful life in the current cycle.</p>
+  </div>
+</div>
+
+<!-- ═══ FUNDING ═══ -->
+<div class="panel">
+  <div class="alert ar"><strong>Structural funding deficit:</strong> Contributing $29,000/yr against a $54,757/yr accrual requirement creates a $25,757 annual shortfall. Contributions must grow from $127/unit/month in 2026 to $864/unit/month by 2055 — a 6.8× increase. The association does not reach adequate funding (70%) until approximately 2047.</div>
+
+  <div class="card">
+    <h2>30-year reserve contribution ramp — per unit / month</h2>
+    <p class="sub">Required monthly contribution per unit under the projected funding plan</p>
+    <div style="display:flex;gap:8px;align-items:flex-end;height:160px;padding-top:20px;margin-bottom:8px;">
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#DC2626;">$127</span><div style="width:100%;background:#DC2626;border-radius:4px 4px 0 0;" style="height:24px;"><div style="height:24px;"></div></div><span style="font-size:10px;color:#374151;">2026</span></div>
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#DC2626;">$191</span><div style="width:100%;height:35px;background:#DC2626;border-radius:4px 4px 0 0;"></div><span style="font-size:10px;color:#374151;">2027</span></div>
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#DC2626;">$286</span><div style="width:100%;height:53px;background:#DC2626;border-radius:4px 4px 0 0;"></div><span style="font-size:10px;color:#374151;">2028</span></div>
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#DC2626;">$401</span><div style="width:100%;height:74px;background:#DC2626;border-radius:4px 4px 0 0;"></div><span style="font-size:10px;color:#374151;">2029</span></div>
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#DC2626;">$413</span><div style="width:100%;height:76px;background:#DC2626;border-radius:4px 4px 0 0;"></div><span style="font-size:10px;color:#374151;">2030</span></div>
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#F59E0B;">$478</span><div style="width:100%;height:88px;background:#F59E0B;border-radius:4px 4px 0 0;"></div><span style="font-size:10px;color:#374151;">2035</span></div>
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#D97706;">$555</span><div style="width:100%;height:102px;background:#D97706;border-radius:4px 4px 0 0;"></div><span style="font-size:10px;color:#374151;">2040</span></div>
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#16A34A;">$643</span><div style="width:100%;height:119px;background:#D97706;border-radius:4px 4px 0 0;"></div><span style="font-size:10px;color:#374151;">2045</span></div>
+      <div class="urgency-col"><span style="font-size:10px;font-weight:700;color:#16A34A;">$864</span><div style="width:100%;height:160px;background:#16A34A;border-radius:4px 4px 0 0;"></div><span style="font-size:10px;color:#374151;">2055</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Contribution and balance milestones</h2>
+    <table>
+      <thead><tr><th>Year</th><th class="r">Annual contribution</th><th class="r">Per unit/mo</th><th class="r">Year-end balance</th><th class="r">% funded</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr class="hl2"><td>2026</td><td class="r">$29,000</td><td class="r">$127</td><td class="r">$13,878</td><td class="r"><span class="badge br">2%</span></td><td style="font-size:11px">+$50K special assessment; $81K in expenditures</td></tr>
+        <tr><td>2027</td><td class="r">$43,500</td><td class="r">$191</td><td class="r">$46,199</td><td class="r"><span class="badge br">6%</span></td><td style="font-size:11px">+50% increase in contribution</td></tr>
+        <tr><td>2028</td><td class="r">$65,250</td><td class="r">$286</td><td class="r">$97,539</td><td class="r"><span class="badge br">11%</span></td><td style="font-size:11px">+50% increase</td></tr>
+        <tr class="hl2"><td>2029</td><td class="r">$91,350</td><td class="r">$401</td><td class="r">$79,390</td><td class="r"><span class="badge br">11%</span></td><td style="font-size:11px">+$125K special assessment; elevator project ($234K)</td></tr>
+        <tr class="hl"><td>2030</td><td class="r">$94,091</td><td class="r">$413</td><td class="r">$147,479</td><td class="r"><span class="badge ba">18%</span></td><td style="font-size:11px">Post-elevator recovery begins</td></tr>
+        <tr><td>2035</td><td class="r">$109,077</td><td class="r">$478</td><td class="r">$237,219</td><td class="r"><span class="badge br">29%</span></td><td style="font-size:11px">Still high risk</td></tr>
+        <tr><td>2040</td><td class="r">$126,450</td><td class="r">$555</td><td class="r">$385,790</td><td class="r"><span class="badge ba">44%</span></td><td style="font-size:11px">Approaching adequate</td></tr>
+        <tr><td>2045</td><td class="r">$146,590</td><td class="r">$643</td><td class="r">$614,841</td><td class="r"><span class="badge ba">63%</span></td><td style="font-size:11px">Medium risk</td></tr>
+        <tr><td>~2047</td><td class="r">~$155,000</td><td class="r">~$679</td><td class="r">~$750,000</td><td class="r"><span class="badge bg">~70%</span></td><td style="font-size:11px">First reaches adequate funding</td></tr>
+        <tr class="tot"><td>2055</td><td class="r">$197,005</td><td class="r">$864</td><td class="r">$1,514,693</td><td class="r"><span class="badge bg">95%</span></td><td style="font-size:11px">Plan endpoint — 6.8× current contribution/unit</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Top 10 components by annual accrual burden</h2>
+    <p class="sub">Which components consume the most of the $54,757 annual reserve requirement</p>
+    <table>
+      <thead><tr><th>Component</th><th class="r">Replacement cost</th><th class="r">Annual accrual</th><th class="r">% of total</th><th>Urgency</th></tr></thead>
+      <tbody>
+        <tr><td>Flat Roof, Replace</td><td class="r">$186,133</td><td class="r">$9,307</td><td class="r"><span class="badge br">16.99%</span></td><td><span class="badge bb">8 yr</span></td></tr>
+        <tr><td>Elevator, Modernize</td><td class="r">$185,000</td><td class="r">$6,167</td><td class="r"><span class="badge br">11.26%</span></td><td><span class="badge br">3 yr</span></td></tr>
+        <tr><td>Deck Surfaces, Resurface</td><td class="r">$146,809</td><td class="r">$6,117</td><td class="r"><span class="badge ba">11.17%</span></td><td><span class="badge bgr">12 yr</span></td></tr>
+        <tr><td>Deck Surfaces, Seal/Repair</td><td class="r">$23,455</td><td class="r">$3,909</td><td class="r">7.14%</td><td><span class="badge ba">4 yr</span></td></tr>
+        <tr><td>Stucco, Repaint</td><td class="r">$31,328</td><td class="r">$3,133</td><td class="r">5.72%</td><td><span class="badge br">Overdue</span></td></tr>
+        <tr><td>Fire Escapes, Repaint</td><td class="r">$20,514</td><td class="r">$2,931</td><td class="r">5.35%</td><td><span class="badge br">Overdue</span></td></tr>
+        <tr><td>Hallway/Stairs Carpet</td><td class="r">$30,869</td><td class="r">$2,205</td><td class="r">4.02%</td><td><span class="badge ba">6 yr</span></td></tr>
+        <tr><td>Lobby, Remodel</td><td class="r">$49,220</td><td class="r">$2,461</td><td class="r">4.49%</td><td><span class="badge bb">10 yr</span></td></tr>
+        <tr><td>Interior Surfaces, Repaint</td><td class="r">$27,002</td><td class="r">$1,929</td><td class="r">3.52%</td><td><span class="badge ba">6 yr</span></td></tr>
+        <tr><td>Fire Alarm Control Panel</td><td class="r">$22,470</td><td class="r">$1,124</td><td class="r">2.05%</td><td><span class="badge bgr">18 yr</span></td></tr>
+        <tr class="tot"><td>Top 10 subtotal</td><td class="r">$722,800</td><td class="r">$39,283</td><td class="r">71.7%</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

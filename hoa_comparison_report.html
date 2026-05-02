@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 HOA Budget Comparison — The Amelia vs 1970 Sutter Street</title>
+<script>
+// Tab switching defined immediately — no external dependencies needed
+function showTab(n) {
+  var panels = document.querySelectorAll('.panel');
+  var buttons = document.querySelectorAll('.tb');
+  for (var i = 0; i < panels.length; i++) {
+    panels[i].style.display = (i === n) ? 'block' : 'none';
+  }
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].className = buttons[i].className.replace(' on', '');
+    if (i === n) buttons[i].className += ' on';
+  }
+}
+window.addEventListener('DOMContentLoaded', function() { showTab(0); });
+</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #F8FAFC; color: #111827; margin: 0; padding: 22px 18px; font-size: 13px; line-height: 1.5; }
+.wrap { max-width: 960px; margin: 0 auto; }
+.hdr { background: #0F172A; border-radius: 12px; padding: 22px 28px; margin-bottom: 16px; color: #fff; }
+.hdr h1 { font-size: 20px; font-weight: 600; margin: 0 0 4px; }
+.hdr p { font-size: 12px; color: #94A3B8; margin: 0 0 3px; }
+.hdr-pills { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px; }
+.hdr-pill { font-size: 12px; color: #E2E8F0; display: flex; align-items: center; gap: 7px; }
+.dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+.tabs { display: flex; gap: 3px; background: #fff; border: 1px solid #E5E7EB; border-radius: 10px; padding: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+.tb { flex: 1 1 auto; padding: 8px 10px; border-radius: 7px; border: none; cursor: pointer; font-size: 12px; font-weight: 400; background: transparent; color: #374151; font-family: inherit; white-space: nowrap; }
+.tb:hover { background: #F3F4F6; }
+.tb.on { background: #0F172A; color: #fff; font-weight: 600; }
+.tb.warn { background: #FEF3C7; color: #92400E; font-weight: 500; }
+.tb.warn.on { background: #92400E; color: #fff; }
+.panel { display: none; }
+.card { background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; }
+.card h2 { font-size: 14px; font-weight: 600; color: #111827; margin: 0 0 3px; }
+.card .sub { font-size: 12px; color: #6B7280; margin: 0 0 14px; }
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.mx { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 12px 14px; }
+.ml { font-size: 10px; color: #6B7280; text-transform: uppercase; letter-spacing: .05em; margin: 0 0 4px; }
+.mv { font-size: 20px; font-weight: 700; color: #111827; margin: 0; line-height: 1.1; }
+.ms { font-size: 11px; color: #6B7280; margin: 3px 0 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 8px 10px; color: #6B7280; font-weight: 600; font-size: 11px; border-bottom: 2px solid #E5E7EB; background: #F9FAFB; }
+th.r, td.r { text-align: right; }
+td { padding: 8px 10px; color: #111827; border-bottom: 1px solid #F3F4F6; vertical-align: middle; }
+tr.tot td { font-weight: 700; background: #F3F4F6; border-top: 2px solid #E5E7EB; border-bottom: none; }
+tr.hl td { background: #FFFBEB; }
+tr.hl2 td { background: #FEF2F2; }
+.badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+.ba { background: #DBEAFE; color: #1D4ED8; }
+.bs { background: #FEE2E2; color: #DC2626; }
+.bg { background: #DCFCE7; color: #166534; }
+.bw { background: #FEF3C7; color: #92400E; }
+.bgr { background: #F3F4F6; color: #6B7280; }
+.alert { border-radius: 9px; padding: 13px 15px; margin-bottom: 14px; font-size: 13px; line-height: 1.65; }
+.ai { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; }
+.aw { background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; }
+.ar { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; }
+.ag { background: #F0FDF4; border: 1px solid #BBF7D0; color: #166534; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.sc { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 14px; }
+.sc h3 { font-size: 13px; font-weight: 600; margin: 0 0 7px; }
+.sc p { font-size: 12px; color: #4B5563; margin: 0; line-height: 1.6; }
+.note { font-size: 11px; color: #9CA3AF; margin: 8px 0 0; }
+
+/* ── CSS bar charts ── */
+.chart { margin: 4px 0 16px; }
+.chart-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 11px; }
+.chart-label { width: 140px; flex-shrink: 0; color: #374151; text-align: right; }
+.chart-bars { flex: 1; }
+.bar-track { height: 14px; background: #F3F4F6; border-radius: 4px; overflow: hidden; margin-bottom: 2px; position: relative; }
+.bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 6px; font-size: 10px; color: #fff; font-weight: 600; transition: width .4s ease; white-space: nowrap; overflow: hidden; }
+.bar-a { background: #3B82F6; }
+.bar-s { background: #EF4444; }
+.bar-legend { display: flex; gap: 14px; margin-bottom: 10px; font-size: 11px; color: #6B7280; }
+.bar-legend span { display: flex; align-items: center; gap: 5px; }
+.swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.chart-val { width: 55px; flex-shrink: 0; font-size: 11px; color: #6B7280; }
+
+/* urgency timeline */
+.urgency-bar { display: flex; height: 36px; border-radius: 8px; overflow: hidden; margin: 10px 0 6px; }
+.urg-seg { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #fff; flex-direction: column; line-height: 1.2; }
+
+/* pie-like horizontal stacked */
+.stack { height: 22px; border-radius: 6px; overflow: hidden; display: flex; margin: 10px 0 8px; }
+.stack-seg { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; font-weight: 600; white-space: nowrap; overflow: hidden; }
+
+@media (max-width: 580px) { .two { grid-template-columns: 1fr; } body { padding: 12px 10px; } .chart-label { width: 100px; font-size: 10px; } }
+@media print { .tabs { display: none; } .panel { display: block !important; } .card { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <h1>2026 HOA Budget Comparison</h1>
+  <p>The Amelia (36 units) &nbsp;·&nbsp; 1970 Sutter Street Condominium Association (19 units) &nbsp;·&nbsp; San Francisco</p>
+  <div class="hdr-pills">
+    <span class="hdr-pill"><span class="dot" style="background:#3B82F6"></span>The Amelia — $452,087 total &nbsp;·&nbsp; $1,047 / unit / month</span>
+    <span class="hdr-pill"><span class="dot" style="background:#EF4444"></span>1970 Sutter Street — $245,344 total &nbsp;·&nbsp; $1,076 / unit / month</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tb" onclick="showTab(0)">Overview</button>
+  <button class="tb" onclick="showTab(1)">Per-unit analysis</button>
+  <button class="tb" onclick="showTab(2)">Operations</button>
+  <button class="tb" onclick="showTab(3)">Utilities</button>
+  <button class="tb" onclick="showTab(4)">Reserves &amp; insurance</button>
+  <button class="tb warn" onclick="showTab(5)">⚡ Shared transformer</button>
+</div>
+
+<!-- ═══ TAB 0 — OVERVIEW ═══ -->
+<div class="panel">
+  <div class="alert ai"><strong>Headline finding:</strong> Despite nearly double the absolute budget, The Amelia costs <strong>$29/month less per unit</strong> than 1970 Sutter ($1,047 vs $1,076). The dramatic difference is in <em>composition</em> — Amelia devotes 45% of its budget to reserves vs Sutter's 12%, while Sutter spends 66% more per unit on day-to-day operations.</div>
+  <div class="metrics">
+    <div class="mx"><p class="ml">Amelia total budget</p><p class="mv">$452,087</p><p class="ms">36 units · +27.6% vs 2025</p></div>
+    <div class="mx"><p class="ml">Sutter total budget</p><p class="mv">$245,344</p><p class="ms">19 units · +10.0% vs 2025</p></div>
+    <div class="mx"><p class="ml">Amelia / unit / month</p><p class="mv">$1,047</p><p class="ms">all-in including reserves</p></div>
+    <div class="mx"><p class="ml">Sutter / unit / month</p><p class="mv">$1,076</p><p class="ms">all-in including reserves</p></div>
+  </div>
+
+  <div class="card">
+    <h2>Budget by category — total dollars</h2>
+    <p class="sub">Amelia has 36 units; Sutter has 19. Per-unit figures in the next tab normalize for size.</p>
+    <div class="bar-legend"><span><span class="swatch" style="background:#3B82F6"></span>The Amelia</span><span><span class="swatch" style="background:#EF4444"></span>1970 Sutter</span></div>
+    <div class="chart">
+      <div class="chart-row"><div class="chart-label">Administration</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:13%">$25,933</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:17%">$35,017</div></div></div></div>
+      <div class="chart-row"><div class="chart-label">Operations &amp; Maint.</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:18%">$36,900</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:26%">$52,974</div></div></div></div>
+      <div class="chart-row"><div class="chart-label">Utilities</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:49%">$99,462</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:39%">$79,715</div></div></div></div>
+      <div class="chart-row"><div class="chart-label">Insurance</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:42%">$85,445</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:24%">$49,638</div></div></div></div>
+      <div class="chart-row"><div class="chart-label">Reserve Contribution</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:100%">$204,347</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:14%">$29,000</div></div></div></div>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="card">
+      <h2>Amelia — budget mix</h2>
+      <p class="sub">$452,087 total</p>
+      <div class="stack">
+        <div class="stack-seg" style="width:5.7%;background:#3B82F6" title="Admin 5.7%">5.7%</div>
+        <div class="stack-seg" style="width:8.2%;background:#16A34A" title="Ops 8.2%">8%</div>
+        <div class="stack-seg" style="width:22%;background:#D97706" title="Utilities 22%">22%</div>
+        <div class="stack-seg" style="width:18.9%;background:#DC2626" title="Insurance 18.9%">19%</div>
+        <div class="stack-seg" style="width:45.2%;background:#7C3AED" title="Reserves 45.2%">45.2%</div>
+      </div>
+      <div style="font-size:11px;color:#6B7280;line-height:2;">
+        <span style="color:#3B82F6">■</span> Admin 5.7% &nbsp;
+        <span style="color:#16A34A">■</span> Ops 8.2% &nbsp;
+        <span style="color:#D97706">■</span> Utilities 22% &nbsp;
+        <span style="color:#DC2626">■</span> Insurance 19% &nbsp;
+        <span style="color:#7C3AED">■</span> <strong>Reserves 45%</strong>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Sutter — budget mix</h2>
+      <p class="sub">$245,344 total</p>
+      <div class="stack">
+        <div class="stack-seg" style="width:14.3%;background:#3B82F6" title="Admin 14.3%">14%</div>
+        <div class="stack-seg" style="width:21.6%;background:#16A34A" title="Ops 21.6%">22%</div>
+        <div class="stack-seg" style="width:32.5%;background:#D97706" title="Utilities 32.5%">32%</div>
+        <div class="stack-seg" style="width:20.2%;background:#DC2626" title="Insurance 20.2%">20%</div>
+        <div class="stack-seg" style="width:11.8%;background:#7C3AED" title="Reserves 11.8%">12%</div>
+      </div>
+      <div style="font-size:11px;color:#6B7280;line-height:2;">
+        <span style="color:#3B82F6">■</span> Admin 14.3% &nbsp;
+        <span style="color:#16A34A">■</span> Ops 21.6% &nbsp;
+        <span style="color:#D97706">■</span> Utilities 32.5% &nbsp;
+        <span style="color:#DC2626">■</span> Insurance 20.2% &nbsp;
+        <span style="color:#7C3AED">■</span> <strong>Reserves 12%</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Full category comparison</h2>
+    <p class="sub">Total dollars, percent of budget, and per-unit/month for both associations</p>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>Category</th><th class="r" style="color:#1D4ED8">Amelia $</th><th class="r" style="color:#1D4ED8">% bgt</th><th class="r" style="color:#1D4ED8">/unit/mo</th><th class="r" style="color:#DC2626">Sutter $</th><th class="r" style="color:#DC2626">% bgt</th><th class="r" style="color:#DC2626">/unit/mo</th><th class="r">Δ/mo</th></tr></thead>
+      <tbody>
+        <tr><td>Administration</td><td class="r">$25,933</td><td class="r"><span class="badge ba">5.7%</span></td><td class="r">$60</td><td class="r">$35,017</td><td class="r"><span class="badge bs">14.3%</span></td><td class="r">$154</td><td class="r" style="color:#16A34A">−$94</td></tr>
+        <tr><td>Operations &amp; maintenance</td><td class="r">$36,900</td><td class="r"><span class="badge ba">8.2%</span></td><td class="r">$85</td><td class="r">$52,974</td><td class="r"><span class="badge bs">21.6%</span></td><td class="r">$232</td><td class="r" style="color:#16A34A">−$147</td></tr>
+        <tr><td>Utilities</td><td class="r">$99,462</td><td class="r"><span class="badge ba">22.0%</span></td><td class="r">$230</td><td class="r">$79,715</td><td class="r"><span class="badge bs">32.5%</span></td><td class="r">$350</td><td class="r" style="color:#16A34A">−$120</td></tr>
+        <tr><td>Insurance</td><td class="r">$85,445</td><td class="r"><span class="badge ba">18.9%</span></td><td class="r">$198</td><td class="r">$49,638</td><td class="r"><span class="badge bs">20.2%</span></td><td class="r">$218</td><td class="r" style="color:#16A34A">−$20</td></tr>
+        <tr><td>Reserve contribution</td><td class="r">$204,347</td><td class="r"><span class="badge ba">45.2%</span></td><td class="r">$473</td><td class="r">$29,000</td><td class="r"><span class="badge bs">11.8%</span></td><td class="r">$127</td><td class="r" style="color:#DC2626">+$346</td></tr>
+        <tr class="tot"><td>Total</td><td class="r">$452,087</td><td class="r">100%</td><td class="r">$1,047</td><td class="r">$245,344</td><td class="r">100%</td><td class="r">$1,076</td><td class="r" style="color:#16A34A">−$29</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="note">Δ/mo = Amelia minus Sutter per unit/month. Negative = Amelia cheaper per unit. Sutter is $29/unit/mo higher overall.</p>
+  </div>
+</div>
+
+<!-- ═══ TAB 1 — PER-UNIT ═══ -->
+<div class="panel">
+  <div class="alert ai"><strong>Key story:</strong> Amelia owners pay $380/month <em>less</em> per unit for day-to-day operations, but contribute $346/month <em>more</em> to reserves. The net result is that Sutter owners pay $29/month <em>more</em> per unit — and also face $9,211/unit in pending special assessments across 2026–2029, plus reserve contributions that must triple by 2030.</div>
+  <div class="metrics">
+    <div class="mx"><p class="ml">Amelia total /unit/mo</p><p class="mv">$1,047</p><p class="ms">36 units</p></div>
+    <div class="mx"><p class="ml">Sutter total /unit/mo</p><p class="mv">$1,076</p><p class="ms">19 units</p></div>
+    <div class="mx"><p class="ml">Amelia operating /unit/mo</p><p class="mv">$573</p><p class="ms">excl. reserve contribution</p></div>
+    <div class="mx"><p class="ml">Sutter operating /unit/mo</p><p class="mv">$953</p><p class="ms">excl. reserve contribution</p></div>
+  </div>
+
+  <div class="card">
+    <h2>Per-unit / month by category</h2>
+    <p class="sub">Normalizes for building size — the most meaningful comparison</p>
+    <div class="bar-legend"><span><span class="swatch" style="background:#3B82F6"></span>The Amelia</span><span><span class="swatch" style="background:#EF4444"></span>1970 Sutter</span></div>
+    <div class="chart">
+      <div class="chart-row"><div class="chart-label">Administration</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:13%">$60</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:33%">$154</div></div></div></div>
+      <div class="chart-row"><div class="chart-label">Operations</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:18%">$85</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:49%">$232</div></div></div></div>
+      <div class="chart-row"><div class="chart-label">Utilities</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:49%">$230</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:74%">$350</div></div></div></div>
+      <div class="chart-row"><div class="chart-label">Insurance (Amelia+EQ)</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:42%">$198</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:46%">$218</div></div></div></div>
+      <div class="chart-row"><div class="chart-label">Reserve Contribution</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:100%">$473</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:27%">$127</div></div></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Per-unit/month detail with ratios</h2>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>Category</th><th class="r" style="color:#1D4ED8">Amelia /unit/mo</th><th class="r" style="color:#DC2626">Sutter /unit/mo</th><th class="r">Delta</th><th class="r">Sutter ÷ Amelia</th><th>Key driver</th></tr></thead>
+      <tbody>
+        <tr><td>Administration</td><td class="r">$60</td><td class="r">$154</td><td class="r" style="color:#16A34A">−$94</td><td class="r"><span class="badge bs">2.6×</span></td><td style="font-size:11px">Elevator complexity + 19-unit scale</td></tr>
+        <tr><td>Operations &amp; maintenance</td><td class="r">$85</td><td class="r">$232</td><td class="r" style="color:#16A34A">−$147</td><td class="r"><span class="badge bs">2.7×</span></td><td style="font-size:11px">Elevator, $14,900 facilities catch-all, window cleaning</td></tr>
+        <tr><td>Utilities</td><td class="r">$230</td><td class="r">$350</td><td class="r" style="color:#16A34A">−$120</td><td class="r"><span class="badge bs">1.5×</span></td><td style="font-size:11px">Elevator energy, boilers, $7,933 phone line</td></tr>
+        <tr><td>Insurance (Amelia incl. earthquake)</td><td class="r">$198</td><td class="r">$218</td><td class="r" style="color:#16A34A">−$20</td><td class="r"><span class="badge bw">1.1×</span></td><td style="font-size:11px">Sutter pays more — and has no earthquake coverage</td></tr>
+        <tr><td>Reserve contribution</td><td class="r">$473</td><td class="r">$127</td><td class="r" style="color:#DC2626">+$346</td><td class="r"><span class="badge bg">0.27×</span></td><td style="font-size:11px">Amelia properly funded; Sutter 2% funded</td></tr>
+        <tr class="tot"><td>Total</td><td class="r">$1,047</td><td class="r">$1,076</td><td class="r" style="color:#16A34A">−$29</td><td class="r">≈1×</td><td style="font-size:11px">Sutter $29/mo higher — opposite allocation strategies</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Scale advantage: what 36 units buys The Amelia</h2>
+    <div class="two">
+      <div class="sc"><h3>Admin efficiency</h3><p>Management: $21,433 ÷ 36 = $595/unit/yr. Sutter: $27,518 ÷ 19 = $1,448/unit/yr. Sutter owners pay 143% more per unit just for management.</p></div>
+      <div class="sc"><h3>No elevator, no elevator problem</h3><p>Amelia avoids $7,450/yr in maintenance plus a $234,499 modernization due ~2029. That modernization alone is $12,342/unit across Sutter's 19 homes.</p></div>
+      <div class="sc"><h3>Water cost neutral at scale</h3><p>Amelia $49,900 ÷ 36 = $116/unit/mo. Sutter $27,000 ÷ 19 = $118/unit/mo. Virtually identical — Amelia's higher total simply reflects more residents.</p></div>
+      <div class="sc"><h3>Reserve math at scale</h3><p>$204,347 across 36 units = $473/unit/mo. Sutter's $29,000 = $127/unit/mo — and contributions must nearly triple by 2030 under the current reserve plan.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 2 — OPERATIONS ═══ -->
+<div class="panel">
+  <div class="metrics">
+    <div class="mx"><p class="ml">Amelia admin /unit/mo</p><p class="mv">$60</p><p class="ms">$25,933 total</p></div>
+    <div class="mx"><p class="ml">Sutter admin /unit/mo</p><p class="mv">$154</p><p class="ms">$35,017 — 2.6× higher/unit</p></div>
+    <div class="mx"><p class="ml">Amelia ops /unit/mo</p><p class="mv">$85</p><p class="ms">$36,900 total</p></div>
+    <div class="mx"><p class="ml">Sutter ops /unit/mo</p><p class="mv">$232</p><p class="ms">$52,974 — 2.7× higher/unit</p></div>
+  </div>
+  <div class="card">
+    <h2>Operations &amp; maintenance — all line items</h2>
+    <div class="bar-legend"><span><span class="swatch" style="background:#3B82F6"></span>The Amelia</span><span><span class="swatch" style="background:#EF4444"></span>1970 Sutter</span></div>
+    <div class="chart">
+      <div class="chart-row"><div class="chart-label">Janitorial / custodial</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:79%">$11,760</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:99%">$14,748</div></div></div></div>
+      <div class="chart-row"><div class="chart-label">Landscaping (all)</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:73%">$10,900</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:23%">$3,430</div></div></div></div>
+      <div class="chart-row"><div class="chart-label">Pest control</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:32%">$4,700</div></div><div class="bar-track" style="background:transparent"><div class="bar-fill bar-s" style="width:0%"></div></div></div><div class="chart-val" style="color:#9CA3AF">none</div></div>
+      <div class="chart-row"><div class="chart-label">Fire alarm / system</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:14%">$2,050</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:27%">$3,986</div></div></div></div>
+      <div class="chart-row"><div class="chart-label">Entry / intercom</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:7%">$1,100</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:40%">$5,960</div></div></div></div>
+      <div class="chart-row"><div class="chart-label">Elevator maintenance</div><div class="chart-bars"><div class="bar-track" style="background:transparent"><div class="bar-fill bar-a" style="width:0%"></div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:50%">$7,450</div></div></div><div class="chart-val" style="color:#9CA3AF">n/a</div></div>
+      <div class="chart-row"><div class="chart-label">Facilities (catch-all)</div><div class="chart-bars"><div class="bar-track" style="background:transparent"><div class="bar-fill bar-a" style="width:0%"></div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:100%">$14,900</div></div></div><div class="chart-val" style="color:#9CA3AF">n/a</div></div>
+      <div class="chart-row"><div class="chart-label">Window cleaning</div><div class="chart-bars"><div class="bar-track" style="background:transparent"><div class="bar-fill bar-a" style="width:0%"></div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:17%">$2,500</div></div></div><div class="chart-val" style="color:#9CA3AF">n/a</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Operations per-unit/month detail</h2>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>Line item</th><th class="r" style="color:#1D4ED8">Amelia total</th><th class="r" style="color:#1D4ED8">/unit/mo</th><th class="r" style="color:#DC2626">Sutter total</th><th class="r" style="color:#DC2626">/unit/mo</th><th class="r">Delta</th></tr></thead>
+      <tbody>
+        <tr><td>Janitorial / custodial</td><td class="r">$11,760</td><td class="r">$27</td><td class="r">$14,748</td><td class="r">$65</td><td class="r" style="color:#16A34A">−$38</td></tr>
+        <tr><td>Landscaping (all incl. trees, irrigation)</td><td class="r">$10,900</td><td class="r">$25</td><td class="r">$3,430</td><td class="r">$15</td><td class="r" style="color:#DC2626">+$10</td></tr>
+        <tr><td>Pest control</td><td class="r">$4,700</td><td class="r">$11</td><td class="r">—</td><td class="r">—</td><td class="r">—</td></tr>
+        <tr><td>Fire alarm / system</td><td class="r">$2,050</td><td class="r">$5</td><td class="r">$3,986</td><td class="r">$17</td><td class="r" style="color:#16A34A">−$12</td></tr>
+        <tr><td>Entry / intercom system</td><td class="r">$1,100</td><td class="r">$3</td><td class="r">$5,960</td><td class="r">$26</td><td class="r" style="color:#16A34A">−$23</td></tr>
+        <tr><td>Fire escapes maintenance</td><td class="r">$990</td><td class="r">$2</td><td class="r">—</td><td class="r">—</td><td class="r">—</td></tr>
+        <tr class="hl"><td>Elevator maintenance</td><td class="r">—</td><td class="r">—</td><td class="r">$7,450</td><td class="r">$33</td><td class="r" style="color:#16A34A">−$33</td></tr>
+        <tr class="hl"><td>Facilities maintenance (catch-all)</td><td class="r">—</td><td class="r">—</td><td class="r">$14,900</td><td class="r">$65</td><td class="r" style="color:#16A34A">−$65</td></tr>
+        <tr class="hl"><td>Window cleaning</td><td class="r">—</td><td class="r">—</td><td class="r">$2,500</td><td class="r">$11</td><td class="r" style="color:#16A34A">−$11</td></tr>
+        <tr><td>Other (drains, hot water, lighting, misc)</td><td class="r">$3,900</td><td class="r">$9</td><td class="r">$2,900</td><td class="r">$13</td><td class="r" style="color:#16A34A">−$4</td></tr>
+        <tr class="tot"><td>Total operations</td><td class="r">$36,900</td><td class="r">$85</td><td class="r">$52,974</td><td class="r">$232</td><td class="r" style="color:#16A34A">−$147</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 3 — UTILITIES ═══ -->
+<div class="panel">
+  <div class="alert aw"><strong>Key inversion:</strong> Amelia's total utility bill is 25% higher in absolute dollars, but Sutter's utility cost is <strong>52% higher per unit</strong> ($350/mo vs $230/mo). The elevator, boilers, garage ventilation, and a $7,933 phone/telephone line account for Sutter's disproportionate per-unit spend.</div>
+  <div class="metrics">
+    <div class="mx"><p class="ml">Amelia utilities /unit/mo</p><p class="mv">$230</p><p class="ms">$99,462 total</p></div>
+    <div class="mx"><p class="ml">Sutter utilities /unit/mo</p><p class="mv">$350</p><p class="ms">$79,715 total — 52% higher/unit</p></div>
+    <div class="mx"><p class="ml">Sutter premium /unit</p><p class="mv">+$120/mo</p><p class="ms">Sutter pays more despite lower total</p></div>
+  </div>
+  <div class="card">
+    <h2>Utilities — total dollars vs per-unit/month</h2>
+    <div class="two">
+      <div>
+        <p style="font-size:12px;font-weight:600;margin:0 0 8px;">Total dollars</p>
+        <div class="bar-legend"><span><span class="swatch" style="background:#3B82F6"></span>Amelia</span><span><span class="swatch" style="background:#EF4444"></span>Sutter</span></div>
+        <div class="chart">
+          <div class="chart-row"><div class="chart-label">Gas + Electricity</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:43%">$21,428</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:57%">$28,480</div></div></div></div>
+          <div class="chart-row"><div class="chart-label">Water &amp; Sewer</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:100%">$49,900</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:54%">$27,000</div></div></div></div>
+          <div class="chart-row"><div class="chart-label">Trash / Refuse</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:48%">$24,200</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:32%">$15,874</div></div></div></div>
+          <div class="chart-row"><div class="chart-label">Internet</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:4%">$1,904</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:1%">$428</div></div></div></div>
+          <div class="chart-row"><div class="chart-label">Phone / Fire Water</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:2%">$780</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:16%">$7,933</div></div></div></div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px;font-weight:600;margin:0 0 8px;">Per unit / month</p>
+        <div class="bar-legend"><span><span class="swatch" style="background:#3B82F6"></span>Amelia</span><span><span class="swatch" style="background:#EF4444"></span>Sutter</span></div>
+        <div class="chart">
+          <div class="chart-row"><div class="chart-label">Gas + Electricity</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:40%">$50</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:100%">$125</div></div></div></div>
+          <div class="chart-row"><div class="chart-label">Water &amp; Sewer</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:93%">$116</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:94%">$118</div></div></div></div>
+          <div class="chart-row"><div class="chart-label">Trash / Refuse</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:45%">$56</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:56%">$70</div></div></div></div>
+          <div class="chart-row"><div class="chart-label">Internet</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:3%">$4</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:2%">$2</div></div></div></div>
+          <div class="chart-row"><div class="chart-label">Phone / Fire Water</div><div class="chart-bars"><div class="bar-track"><div class="bar-fill bar-a" style="width:2%">$2</div></div><div class="bar-track"><div class="bar-fill bar-s" style="width:28%">$35</div></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Utilities per-unit/month detail</h2>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>Line item</th><th class="r" style="color:#1D4ED8">Amelia total</th><th class="r" style="color:#1D4ED8">/unit/mo</th><th class="r" style="color:#DC2626">Sutter total</th><th class="r" style="color:#DC2626">/unit/mo</th><th class="r">Delta/unit</th></tr></thead>
+      <tbody>
+        <tr><td>Gas + electricity</td><td class="r">$21,428</td><td class="r">$50</td><td class="r">$28,480</td><td class="r">$125</td><td class="r" style="color:#16A34A">−$75</td></tr>
+        <tr><td>Water &amp; sewer</td><td class="r">$49,900</td><td class="r">$116</td><td class="r">$27,000</td><td class="r">$118</td><td class="r">−$2</td></tr>
+        <tr><td>Trash / refuse (Recology)</td><td class="r">$24,200</td><td class="r">$56</td><td class="r">$15,874</td><td class="r">$70</td><td class="r" style="color:#16A34A">−$14</td></tr>
+        <tr><td>Internet</td><td class="r">$1,904</td><td class="r">$4</td><td class="r">$428</td><td class="r">$2</td><td class="r" style="color:#DC2626">+$2</td></tr>
+        <tr class="hl"><td>Phone / fire water service</td><td class="r">$780</td><td class="r">$2</td><td class="r">$7,933</td><td class="r">$35</td><td class="r" style="color:#16A34A">−$33</td></tr>
+        <tr class="tot"><td>Total utilities</td><td class="r">$99,462</td><td class="r">$230</td><td class="r">$79,715</td><td class="r">$350</td><td class="r" style="color:#16A34A">−$120</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="note">Water/sewer is virtually identical per unit ($116 vs $118). Sutter's $35/unit/mo phone line ($7,933/yr) warrants review — may include elevator phone, intercom service contracts, or legacy building lines.</p>
+  </div>
+</div>
+
+<!-- ═══ TAB 4 — RESERVES & INSURANCE ═══ -->
+<div class="panel">
+  <div class="alert ar"><strong>Critical — 1970 Sutter reserve fund:</strong> Only <strong>2% funded</strong> against a $757,051 fully-funded target. Cash on hand: $15,908. Two special assessments totalling $175,000 are scheduled through 2029. Reserve contributions must grow from $127/unit/mo today to $864/unit/mo by 2055 under the current plan.</div>
+  <div class="metrics">
+    <div class="mx"><p class="ml">Amelia reserve /unit/mo</p><p class="mv">$473</p><p class="ms">properly funded</p></div>
+    <div class="mx"><p class="ml">Sutter reserve /unit/mo</p><p class="mv">$127</p><p class="ms">2% funded — critical</p></div>
+    <div class="mx"><p class="ml">Sutter reserve cash</p><p class="mv">$15,908</p><p class="ms">vs $757K fully-funded target</p></div>
+    <div class="mx"><p class="ml">Sutter deficit per unit</p><p class="mv">($39,007)</p><p class="ms">average shortfall</p></div>
+  </div>
+
+  <div class="card">
+    <h2>Sutter reserve funding trajectory — % funded by year</h2>
+    <p class="sub">Under the current projected funding plan including scheduled special assessments. Red = high risk (0–30%), amber = medium (30–70%), green = adequate (70%+).</p>
+    <div style="display:flex;gap:6px;align-items:flex-end;height:160px;padding-top:20px;margin-bottom:8px;">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <span style="font-size:10px;font-weight:600;color:#DC2626;">2%</span>
+        <div style="width:100%;background:#DC2626;border-radius:4px 4px 0 0;height:4px;"></div>
+        <span style="font-size:10px;color:#6B7280;">2026</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <span style="font-size:10px;font-weight:600;color:#DC2626;">6%</span>
+        <div style="width:100%;background:#DC2626;border-radius:4px 4px 0 0;height:10px;"></div>
+        <span style="font-size:10px;color:#6B7280;">2027</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <span style="font-size:10px;font-weight:600;color:#DC2626;">11%</span>
+        <div style="width:100%;background:#DC2626;border-radius:4px 4px 0 0;height:18px;"></div>
+        <span style="font-size:10px;color:#6B7280;">2028</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <span style="font-size:10px;font-weight:600;color:#DC2626;">11%</span>
+        <div style="width:100%;background:#DC2626;border-radius:4px 4px 0 0;height:18px;"></div>
+        <span style="font-size:10px;color:#6B7280;">2029</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <span style="font-size:10px;font-weight:600;color:#DC2626;">18%</span>
+        <div style="width:100%;background:#DC2626;border-radius:4px 4px 0 0;height:29px;"></div>
+        <span style="font-size:10px;color:#6B7280;">2030</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <span style="font-size:10px;font-weight:600;color:#DC2626;">29%</span>
+        <div style="width:100%;background:#DC2626;border-radius:4px 4px 0 0;height:46px;"></div>
+        <span style="font-size:10px;color:#6B7280;">2035</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <span style="font-size:10px;font-weight:600;color:#D97706;">63%</span>
+        <div style="width:100%;background:#D97706;border-radius:4px 4px 0 0;height:100px;"></div>
+        <span style="font-size:10px;color:#6B7280;">2045</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <span style="font-size:10px;font-weight:600;color:#16A34A;">95%</span>
+        <div style="width:100%;background:#16A34A;border-radius:4px 4px 0 0;height:152px;"></div>
+        <span style="font-size:10px;color:#6B7280;">2055</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Sutter upcoming financial obligations</h2>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>Obligation</th><th class="r">Year</th><th class="r">Total cost</th><th class="r">Per unit avg</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Special assessment #1</td><td class="r">2026</td><td class="r">$50,000</td><td class="r">$2,632</td><td style="font-size:11px">Already approved</td></tr>
+        <tr><td>Special assessment #2</td><td class="r">2029</td><td class="r">$125,000</td><td class="r">$6,579</td><td style="font-size:11px">Projected in reserve plan</td></tr>
+        <tr class="hl2"><td>Elevator modernization (TKE)</td><td class="r">~2029</td><td class="r">$234,499</td><td class="r">$12,342</td><td style="font-size:11px">Discontinued control board — TKE recommendation</td></tr>
+        <tr class="tot"><td>Total known obligations</td><td class="r"></td><td class="r">$409,499</td><td class="r">$21,553</td><td style="font-size:11px">Does not include ongoing contribution increases</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Insurance comparison</h2>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>Line item</th><th class="r" style="color:#1D4ED8">Amelia total</th><th class="r" style="color:#1D4ED8">/unit/mo</th><th class="r" style="color:#DC2626">Sutter total</th><th class="r" style="color:#DC2626">/unit/mo</th></tr></thead>
+      <tbody>
+        <tr><td>Master / package policy</td><td class="r">$65,195</td><td class="r">$151</td><td class="r">$49,638</td><td class="r">$218</td></tr>
+        <tr class="hl2"><td>Earthquake insurance</td><td class="r">$20,000</td><td class="r">$46</td><td class="r" style="color:#DC2626;font-weight:600">NONE</td><td class="r">—</td></tr>
+        <tr><td>SFFD annual inspection fee</td><td class="r">$250</td><td class="r">$1</td><td class="r">—</td><td class="r">—</td></tr>
+        <tr class="tot"><td>Total insurance</td><td class="r">$85,445</td><td class="r">$198</td><td class="r">$49,638</td><td class="r">$218</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="alert aw" style="margin-top:12px;font-size:12px;">Sutter pays $20/unit/month <em>more</em> for insurance — and receives no earthquake coverage. In San Francisco's high seismic zone, this is a critical uninsured risk. Any significant earthquake could result in losses requiring catastrophic special assessments.</div>
+  </div>
+</div>
+
+<!-- ═══ TAB 5 — TRANSFORMER ═══ -->
+<div class="panel">
+  <div class="alert aw"><strong>Shared underground transformer — unresolved cost and risk issue.</strong> The Amelia and 1970 Sutter share a PGE underground transformer. Amelia pays a mandatory PGE maintenance fee of <strong>$140/month ($1,680/year)</strong>. Sutter is not on the PGE paperwork and currently pays nothing. Per the Amelia board: <em>"Your building should be paying a portion of the maintenance fee."</em></div>
+  <div class="metrics">
+    <div class="mx"><p class="ml">PGE monthly fee (total)</p><p class="mv">$140/mo</p><p class="ms">$1,680/year — Amelia pays 100%</p></div>
+    <div class="mx"><p class="ml">Sutter fair share (50/50)</p><p class="mv">$840/yr</p><p class="ms">$70/mo · $3.68/unit/mo</p></div>
+    <div class="mx"><p class="ml">PGE emergency disconnect</p><p class="mv">$10,000</p><p class="ms">$526/unit — unbudgeted</p></div>
+    <div class="mx"><p class="ml">Currently budgeted by Sutter</p><p class="mv">$0</p><p class="ms">not on paperwork, no line item</p></div>
+  </div>
+  <div class="card">
+    <h2>Current situation vs equitable split</h2>
+    <div class="two">
+      <div class="sc" style="background:#FEF2F2;border-color:#FECACA;">
+        <h3 style="color:#991B1B">Current — inequitable</h3>
+        <p>Amelia pays: <strong>$1,680/yr</strong> (100% of shared cost)<br>$3.89/unit/mo across 36 units<br><br>Sutter pays: <strong>$0/yr</strong><br>Not on PGE paperwork — no standing to request an emergency disconnect directly from PGE.</p>
+      </div>
+      <div class="sc" style="background:#F0FDF4;border-color:#BBF7D0;">
+        <h3 style="color:#166534">Equitable — 50/50 split</h3>
+        <p>Amelia pays: <strong>$840/yr</strong><br>$70/mo · $1.94/unit/mo · saves $840/yr<br><br>Sutter pays: <strong>$840/yr</strong><br>$70/mo · $3.68/unit/mo · new budget line needed for 2027</p>
+      </div>
+    </div>
+    <p class="note">A pro-rata split by units (36:19 = 65%:35%) would have Amelia pay $1,092/yr and Sutter $588/yr. Either split is more equitable than the current 100/0 arrangement.</p>
+  </div>
+  <div class="card">
+    <h2>The $10,000 risk and the paperwork gap</h2>
+    <div class="two">
+      <div class="sc" style="background:#FEF2F2;border-color:#FECACA;"><h3>Emergency disconnect scenario</h3><p>An electrical fault requiring PGE to disconnect the shared transformer costs <strong>$10,000 per occurrence</strong> — $526/unit across Sutter's 19 homes. This is entirely unbudgeted. Without formal paperwork, Sutter may need Amelia's cooperation to even request the disconnect, adding delay to a potential fire-risk situation.</p></div>
+      <div class="sc" style="background:#F0FDF4;border-color:#BBF7D0;"><h3>Prevention: infrared panel scanning</h3><p>The Amelia board (NFPA 70E certified) scans their electrical panel with infrared every 10 years to detect hot spots before failure. Cost: <strong>$500–$1,500</strong>. This is the most cost-effective way to prevent the $10,000 emergency. There is no evidence Sutter does this.</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Recommended action sequence for 1970 Sutter board</h2>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>Priority</th><th>Action</th><th class="r">Annual cost</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge bs">Immediate</span></td><td>Contact PGE to be added to the shared underground transformer maintenance agreement</td><td class="r">$0 (admin)</td></tr>
+        <tr><td><span class="badge bs">Immediate</span></td><td>Negotiate cost-sharing agreement with Amelia (50/50 or pro-rated by units)</td><td class="r">$840/yr ongoing</td></tr>
+        <tr><td><span class="badge bw">2027 budget</span></td><td>Add PGE transformer maintenance fee as a dedicated line item in utilities</td><td class="r">$840/yr</td></tr>
+        <tr><td><span class="badge bw">This year</span></td><td>Schedule infrared electrical panel scan (NFPA 70E standard)</td><td class="r">$500–$1,500 one-time</td></tr>
+        <tr class="tot"><td>Ongoing annual impact</td><td>Transformer share + amortized scan</td><td class="r">~$940/yr · $4.12/unit/mo</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="alert ag" style="margin-top:12px;font-size:12px;">The financial impact is modest ($4.12/unit/month). The priority is resolving the <strong>PGE paperwork gap</strong> — which is both an ongoing cost inequity and a potential safety liability. A formal written cost-sharing agreement between the two associations is the appropriate resolution.</div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
